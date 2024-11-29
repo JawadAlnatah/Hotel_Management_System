@@ -1,6 +1,6 @@
 public class BookingSystem {
     
-    public BookingSystem(){
+    public BookingSystem (){
         
     }
     
