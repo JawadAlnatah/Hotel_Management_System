@@ -24,7 +24,7 @@ public class Menu {
             System.out.print("[1] Login");
             System.out.print("[2] Signup");
 
-            choice = input.nextInt();
+            choice = input.nextInt(); 
 
 
 
@@ -54,6 +54,6 @@ public class Menu {
         System.out.print("[3] Cancel a Reservation");
         System.out.print("[4] View my Reservation");
         System.out.print("[5] Logout");
-        System.out.print("[6] ");
+        
     }
 }
