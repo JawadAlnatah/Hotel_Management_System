@@ -117,7 +117,7 @@ public class BookingSystem {
         }
     
         // If no match is found
-        System.out.println("Invalid username or password.");
+        System.out.println(" Invalid username or password.");
         return false;
     }
 

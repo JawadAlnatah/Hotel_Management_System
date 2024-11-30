@@ -20,9 +20,9 @@ public class Menu {
             System.out.println("|            Welcome to X Hotel            |" );
             System.out.println("============================================");
 
-            System.out.print("[0] Exit");
-            System.out.println("[1] Login");
-            System.out.println("[2] Signup");
+            System.out.print(" [0] Exit");
+            System.out.println(" [1] Login");
+            System.out.println(" [2] Signup");
             System.out.print("Choice: ");
 
 
