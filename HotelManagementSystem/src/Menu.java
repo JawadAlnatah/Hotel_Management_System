@@ -21,8 +21,10 @@ public class Menu {
             System.out.println("============================================");
 
             System.out.print("[0] Exit");
-            System.out.print("[1] Login");
-            System.out.print("[2] Signup");
+            System.out.println("[1] Login");
+            System.out.println("[2] Signup");
+            System.out.print("Choice: ");
+
 
             choice = input.nextInt(); 
 
@@ -49,11 +51,11 @@ public class Menu {
     }
 
     private void customerMenu(Scanner input){
-        System.out.print("[1] search for Available Rooms");
-        System.out.print("[2] Make a Reservation");
-        System.out.print("[3] Cancel a Reservation");
-        System.out.print("[4] View my Reservation");
-        System.out.print("[5] Logout");
+        System.out.println("[1] search for Available Rooms");
+        System.out.println("[2] Make a Reservation");
+        System.out.println("[3] Cancel a Reservation");
+        System.out.println("[4] View my Reservation");
+        System.out.println("[5] Logout");
         
     }
 }
