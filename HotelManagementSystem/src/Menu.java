@@ -44,7 +44,7 @@ public class Menu {
 
     private void adminMenu(Scanner input){
 
-        System.out.println("===========================================");
+        System.out.println("\n===========================================");
         System.out.println("|            Welcome to admin page            |" );
         System.out.println("============================================\n");
 
