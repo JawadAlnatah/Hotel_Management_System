@@ -1,7 +1,7 @@
 public class Room {
 
     private int roomNumber;
-    private String roomType;
+    private String roomType; //single , double , suite
     private double roomPrice;
     private boolean isAvailable;
     
@@ -10,6 +10,7 @@ public class Room {
         this.roomNumber = roomNumber;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
+        this.isAvailable =true;
     }
 
 
@@ -27,18 +28,19 @@ public class Room {
         return this.roomPrice;
     }
 
+    public boolean isAvailable(){
+        return isAvailable;
+    }
+
     //setters
 
-    public void setRoomNumber(int roomNumber){
-        this.roomNumber = roomNumber;
+    public void setAvailable(boolean isAvailable){
+        this.isAvailable = isAvailable;
     }
 
-    public void setRoomType(String roomType){
-        this.roomType = roomType;
-    }
-
-    public void setRoomPrice(double roomPrice){
-        this.roomPrice = roomPrice;
+    public void displayRoomDetails() {
+        System.out.printf("Room #%d - %s - $%.2f - %s%n", 
+        roomNumber, roomType, roomPrice, (isAvailable ? "Available" : "Occupied"));
     }
 
     

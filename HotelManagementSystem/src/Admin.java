@@ -6,6 +6,7 @@ public class Admin extends User {
   public Admin (int userId, String name, String contactInfo, String adminUserName, String adminPassword){
 
     super(userId,name,contactInfo);
+
     this.adminUserName = adminUserName;
     this.adminPassword = adminPassword;
 
@@ -37,8 +38,24 @@ public class Admin extends User {
   // validate password
 
   public boolean validatePassword(String password){
-    return adminPassword.equals(password);
+    return this.adminPassword.equals(password);
   }
+
+  //functionality
+
+  public void addRoom(BookingSystem bookingSystem , Room room){
+    bookingSystem.addRoom(room);
+  }
+
+  public void removeRoom(BookingSystem bookingSystem, Room room){
+    bookingSystem.removeRoom(room);
+  }
+
+  public void viewAllCustomers(BookingSystem bookingSystem){
+    bookingSystem.displayAllCustomers();
+  }
+
+
 
 
 }
