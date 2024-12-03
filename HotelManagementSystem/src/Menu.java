@@ -1,10 +1,14 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Scanner;;
 public class Menu {
 
     private BookingSystem bookingSystem;
     private Scanner input;
+    boolean exit = false;
 
-    int choice = -1;
+    
     
 
     public Menu(BookingSystem bookingSystem){
@@ -15,33 +19,84 @@ public class Menu {
 
 
     public void start(){
-        boolean exit = false;
 
-        while (!exit) {
+        do {
             displayMainMenu();
+            int choice = getIntInput("Enter you choice: ");
+
+            switch (choice) {
 
 
-        }
+               case 0 -> exit = true;
+               case 1 -> login();
+               case 2 -> signUp();
+               default -> System.out.println("Invalid choice. Please try again.\n");
+            }
+            
+        } while (!exit);
+        System.out.println("Thank you for using X Hotel!");
     }
 
     private void displayMainMenu() {
         System.out.println("===========================================");
-        System.out.println("|            Welcome to X Hotel            |" );
-        System.out.println("============================================\n"); 
+        System.out.println("|            Welcome to X Hotel            |");
+        System.out.println("===========================================\n");
         System.out.println("[0] Exit");
         System.out.println("[1] Login");
         System.out.println("[2] Sign Up");
     }
 
-    private void customerMenu(){
-        System.out.println("[1] Make a Reservation");
-        System.out.println("[2] Cancel a Reservation");
+    private void customerMenu() {
+        boolean customerExit = false;
+        do {
+            System.out.println("\n=============== Customer Menu ===============");
+            System.out.println("[0] Logout");
+            System.out.println("[1] Make a Reservation");
+            System.out.println("[2] Cancel a Reservation");
+            System.out.println("[3] View My Reservations");
+            System.out.println("[4] Search Available Rooms");
 
-        if(choice == 1){
-            System.out.println("Enter the date: ");
-            
-        }
+            int choice = getIntInput("Enter your choice: ");
+            switch (choice) {
+                case 0 -> customerExit = true;
+                case 1 -> makeReservation();
+                case 2 -> cancelReservation();
+                case 3 -> viewCustomerReservations();
+                case 4 -> searchAvailableRooms();
+                default -> System.out.println("Invalid choice. Please try again.");
+            }
+        } while (!customerExit);
     }
+
+    private void adminMenu() {
+        boolean adminExit = false;
+        do {
+            System.out.println("\n=============== Admin Menu ===============");
+            System.out.println("[0] Logout");
+            System.out.println("[1] Add Room");
+            System.out.println("[2] Remove Room");
+            System.out.println("[3] View All Reservations");
+            System.out.println("[4] Cancel Reservation");
+            System.out.println("[5] View All Rooms");
+
+            int choice = getIntInput("Enter your choice: ");
+            switch (choice) {
+                case 0 -> adminExit = true;
+                case 1 -> addRoom();
+                case 2 -> removeRoom();
+                case 3 -> viewAllReservations();
+                case 4 -> cancelReservation();
+                case 5 -> displayRooms();
+                default -> System.out.println("Invalid choice. Please try again.");
+            }
+        } while (!adminExit);
+    }
+
+
+
+
+
+    // login handling
 
     private void login(){
         String username = getStringInput("Enter username: ");
@@ -50,9 +105,15 @@ public class Menu {
 
         if (success) {
             System.out.println("\n =============== Welcome ===============");
+            if (bookingSystem.isLoggedInAdmin()) {
+                adminMenu();
+            }
+            else{
+                customerMenu();
+            }
         }
         else{
-            System.out.println("Login failed Invalid credentials");
+            System.out.println("Login failed Invalid credentials or you don't have an account please sign up");
         }
     }
 
@@ -61,31 +122,158 @@ public class Menu {
 
         String name = getStringInput("Enter your name: ");
         String contactInfo = getStringInput("Enter your contact info: ");
-        String username = getStringInput("Enter a username");
+        String username = getStringInput("Enter a username: ");
         String password = getStringInput("Enter a password: ");
 
         Customer customer = new Customer(bookingSystem.getCustomers().size()+1, name, contactInfo, username,password);
 
         bookingSystem.addCustomer(customer);
-        System.out.println("Your account created successfully");
+        System.out.println("Your account created successfully! You can now log in");
     }
 
-    private void addRoom(){
-        System.out.println("\n =============== Add Room ===============");
-        int roomNumber = getIntInput("Enter room number: ")
-        String roomType = getStringInput("Enter room type: ");
-        int roomPrice = //i want to make the each room type has a price ..
-        boolean isAvailable = true;
 
-        Room room = new Room(roomNumber,roomType,roomPrice, isAvailable);
+
+
+    // managing rooms
+    private void addRoom() {
+        System.out.println("\n=============== Add Room ===============");
+        int roomNumber = getIntInput("Enter room number: ");
+        System.out.println("Choose room type:");
+        System.out.println("[1] Single Bedroom ($50)");
+        System.out.println("[2] Double Bedroom ($75)");
+        System.out.println("[3] Suite ($120)");
+        int typeChoice = getIntInput("Enter your choice: ");
+        String roomType = switch (typeChoice) {
+            case 1 -> "Single Bedroom";
+            case 2 -> "Double Bedroom";
+            case 3 -> "Suite";
+            default -> {
+                System.out.println("Invalid choice. Defaulting to Single Bedroom.");
+                yield "Single Bedroom";
+            }
+        };
+        double price = switch (typeChoice) {
+            case 1 -> 50.0;
+            case 2 -> 75.0;
+            case 3 -> 120.0;
+            default -> 50.0;
+        };
+
+        Room room = new Room(roomNumber, roomType, price);
         bookingSystem.addRoom(room);
-        System.out.println("Room #" + roomNumber + " added successfully.");
+        System.out.println("Room #" + roomNumber + " (" + roomType + ") added successfully.");
     }
 
+    private void removeRoom() {
+        System.out.println("\n=============== Remove Room ===============");
+        int roomNumber = getIntInput("Enter room number to remove: ");
+        Room room = bookingSystem.findRoomByNumber(roomNumber);
+
+        if (room != null) {
+            bookingSystem.removeRoom(room);
+            System.out.println("Room #" + roomNumber + " removed successfully.");
+        } else {
+            System.out.println("Room not found.");
+        }
+    }
+    
     private void displayRooms(){
         System.out.println("\n =============== All rooms ===============");
         bookingSystem.displayAllRooms();
     }
+
+    private void searchAvailableRooms() {
+        System.out.println("\n=============== Search Available Rooms ===============");
+        String startDateStr = getStringInput("Enter start date (yyyy-MM-dd): ");
+        String endDateStr = getStringInput("Enter end date (yyyy-MM-dd): ");
+    
+        try {
+            // Convert the String to LocalDate
+            LocalDate startDate = LocalDate.parse(startDateStr);
+            LocalDate endDate = LocalDate.parse(endDateStr);
+    
+            // Call the updated BookingSystem method
+            ArrayList<Room> availableRooms = bookingSystem.searchAvailableRooms(startDate, endDate);
+    
+            if (availableRooms.isEmpty()) {
+                System.out.println("No rooms available for the given dates.");
+            } else {
+                System.out.println("Available Rooms:");
+                for (Room room : availableRooms) {
+                    room.displayRoomDetails();
+                }
+            }
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid date format. Please use yyyy-MM-dd.");
+        }
+    }
+
+
+
+
+
+    //Managing reservations
+
+    private void viewAllReservations() {
+        System.out.println("\n=============== All Reservations ===============");
+        bookingSystem.displayAllReservations();
+    }
+    private void cancelReservation() {
+        System.out.println("\n=============== Cancel Reservation ===============");
+        int reservationId = getIntInput("Enter reservation ID to cancel: ");
+        bookingSystem.cancelReservation(reservationId);
+    }
+
+    private void viewCustomerReservations() {
+        System.out.println("\n=============== My Reservations ===============");
+        int customerId = getIntInput("Enter your customer ID: ");
+        bookingSystem.displayReservationsByCustomerId(customerId);
+    }
+
+
+    private void makeReservation() {
+    System.out.println("\n=============== Make a Reservation ===============");
+    int customerId = getIntInput("Enter your customer ID: ");
+    String startDate = getStringInput("Enter start date (yyyy-MM-dd): ");
+    String endDate = getStringInput("Enter end date (yyyy-MM-dd): ");
+    
+    ArrayList<Room> availableRooms = bookingSystem.searchAvailableRooms(startDate, endDate);
+
+    if (availableRooms.isEmpty()) {
+        System.out.println("No rooms available for the given dates.");
+        return;
+    }
+
+    System.out.println("Available Rooms:");
+    for (Room room : availableRooms) {
+        room.displayRoomDetails();
+    }
+
+    int roomNumber = getIntInput("Enter the room number you wish to book: ");
+    Room selectedRoom = bookingSystem.findRoomByNumber(roomNumber);
+
+    if (selectedRoom == null || !availableRooms.contains(selectedRoom)) {
+        System.out.println("Invalid room selection. Please try again.");
+        return;
+    }
+
+    Customer customer = bookingSystem.findCustomerById(customerId);
+    if (customer == null) {
+        System.out.println("Customer not found.");
+        return;
+    }
+
+    Reservation reservation = new Reservation(
+        bookingSystem.getReservations().size() + 1,customer,selectedRoom,LocalDate.parse(startDate),LocalDate.parse(endDate)
+    );
+    bookingSystem.addReservation(reservation);
+
+    System.out.println("Reservation created successfully! Your reservation ID is " + reservation.getReservationId());
+}
+
+
+
+    //Managing inputs
 
     private String getStringInput(String message) {
         System.out.print(message);
@@ -98,33 +286,9 @@ public class Menu {
             System.out.println("Invalid input. Please enter a number.");
             input.next();
         }
-        return input.nextInt();
+        int result = input.nextInt();
+        input.nextLine(); // Clear newline character
+        return result;
     }
 
-    
-    private void adminMenu(Scanner input){
-
-        System.out.println("===========================================");
-        System.out.println("|            Welcome to admin page            |" );
-        System.out.println("============================================\n");
-
-    }
-
-    private void customerMenu(Scanner input){
-        System.out.println("[1] Make a reservation");
-        System.out.println("[2] Cancel a reservation");
-        System.out.println("[3] View my reservation");
-        System.out.println("[3] Search for available rooms");
-        System.out.println("[5] Logout");
-        
-    }
-    private void customerMenuReservation(Scanner input){
-        System.out.println("Enter the date of stay: ");
-
-
-    }
-
-    private void customerMenuCancelReservation(Scanner input){
-        System.out.println();
-    }
 }
