@@ -65,6 +65,12 @@ public class BookingSystem {
         System.out.println("Admin added: "+ admin.getAdminUserName());
     }
 
+    public void addNewAdmin(BookingSystem bookingSystem, String name, String contactInfo, String username, String password) {
+        Admin newAdmin = new Admin(name, contactInfo, username, password);
+        bookingSystem.addAdmin(newAdmin);
+        System.out.println("New admin added successfully! Username: " + username);
+    }
+
     public void removeAdmin(Admin admin){
         admins.remove(admin);
 
@@ -218,7 +224,7 @@ public class BookingSystem {
     
         // Mark the room as unavailable
         reservation.getRoom().setAvailable(false);
-        System.out.println("Reservation added successfully for room #" + reservation.getRoom().getRoomNumber());
+        System.out.println("\nReservation added successfully for room #" + reservation.getRoom().getRoomNumber()+"\n");
     }
 
     public void displayAllReservations() {

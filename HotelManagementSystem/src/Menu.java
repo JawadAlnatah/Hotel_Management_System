@@ -79,7 +79,9 @@ public class Menu {
             System.out.println("[3] View All Reservations");
             System.out.println("[4] Cancel Reservation");
             System.out.println("[5] View All Rooms");
-
+            System.out.println("[6] Add Admin");
+            System.out.println("[7] View All Payments");
+    
             int choice = getIntInput("Enter your choice: ");
             switch (choice) {
                 case 0 -> adminExit = true;
@@ -88,6 +90,8 @@ public class Menu {
                 case 3 -> viewAllReservations();
                 case 4 -> cancelReservation();
                 case 5 -> displayRooms();
+                case 6 -> addAdmin();
+                case 7 -> viewAllPayments();
                 default -> System.out.println("Invalid choice. Please try again.");
             }
         } while (!adminExit);
@@ -268,7 +272,7 @@ public class Menu {
 
     private void makeReservation() {
         System.out.println("\n=============== Make a Reservation ===============");
-        
+    
         // Retrieve the logged-in customer
         Customer customer = bookingSystem.getLoggedInCustomer();
         if (customer == null) {
@@ -305,17 +309,73 @@ public class Menu {
                 return;
             }
     
+            // Select payment method
+            System.out.println("Choose a payment method:");
+            System.out.println("[1] Credit Card");
+            System.out.println("[2] Cash");
+            System.out.println("[3] Apple pay");
+            int paymentChoice = getIntInput("Enter your choice: ");
+            String paymentMethod = switch (paymentChoice) {
+                case 1 -> "Credit Card";
+                case 2 -> "Cash";
+                case 3 -> "Apple pay";
+                default -> {
+                    System.out.println("Invalid choice. Defaulting to Cash.");
+                    yield "Cash";
+                }
+            };
+    
             // Create a new reservation
             Reservation reservation = new Reservation(customer, selectedRoom, startDate, endDate);
-
-    
             bookingSystem.addReservation(reservation);
     
+            // Process payment
+            double amount = selectedRoom.getRoomPrice();
+            Payment payment = new Payment(reservation, amount, paymentMethod);
+            bookingSystem.addPayment(payment);
+    
+            // Link the payment to the reservation
+            reservation.setPayment(payment);
+    
             System.out.println("Reservation created successfully! Your reservation ID is " + reservation.getReservationId());
+            System.out.println("Payment of $" + amount + " has been processed successfully using " + paymentMethod + ".");
         } catch (DateTimeParseException e) {
             System.out.println("Invalid date format. Please use yyyy-MM-dd.");
         }
     }
+
+
+    //Managing admins
+
+    private void addAdmin() {
+        System.out.println("\n=============== Add New Admin ===============");
+        String name = getStringInput("Enter name: ");
+        String contactInfo = getStringInput("Enter contact info: ");
+        String username = getStringInput("Enter username: ");
+        String password = getStringInput("Enter password: ");
+    
+        Admin loggedInAdmin = bookingSystem.getLoggedInAdmin();
+        if (loggedInAdmin != null) {
+            loggedInAdmin.addNewAdmin(bookingSystem, name, contactInfo, username, password);
+        } else {
+            System.out.println("Error: You must be logged in as an admin to perform this action.");
+        }
+    }
+
+
+
+
+
+
+    //Managing payments
+
+
+    private void viewAllPayments() {
+        System.out.println("\n=============== All Payments ===============");
+        bookingSystem.displayAllPayments();
+    }
+
+
 
 
 
