@@ -3,9 +3,11 @@ public class Admin extends User {
   private String adminUserName;
   private String adminPassword;
 
-  public Admin (int userId, String name, String contactInfo, String adminUserName, String adminPassword){
+  private static int adminIdCounter = 1000; // Start admin IDs from a different range
 
-    super(userId,name,contactInfo);
+  public Admin (String name, String contactInfo, String adminUserName, String adminPassword){
+
+    super(generateAdminId(),name,contactInfo);
 
     this.adminUserName = adminUserName;
     this.adminPassword = adminPassword;
@@ -14,6 +16,10 @@ public class Admin extends User {
 
 
   //getters
+
+  private static int generateAdminId() {
+    return adminIdCounter ++;
+  }
 
 
   public String getAdminUserName(){

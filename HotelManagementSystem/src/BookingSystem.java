@@ -14,6 +14,8 @@ public class BookingSystem {
     private Customer loggedInCustomer;
 
 
+
+
     public BookingSystem (){
         this.admins = new ArrayList<>();
         this.customers = new ArrayList<>();
@@ -23,6 +25,12 @@ public class BookingSystem {
 
         this.loggedInAdmin = null;
         this.loggedInCustomer = null;
+
+        this.rooms = initializeRooms();
+
+        // default admin
+        Admin defaultAdmin = new Admin("admin", "admin@gmail.com", "admin", "admin");
+        this.admins.add(defaultAdmin);
     }
 
     //Getters
@@ -36,6 +44,10 @@ public class BookingSystem {
 
     public ArrayList<Room> getRooms(){
         return rooms;
+    }
+
+    public ArrayList<Reservation> getReservations() {
+        return reservations;
     }
 
     public Customer getLoggedInCustomer(){
@@ -63,8 +75,6 @@ public class BookingSystem {
 
     public void addCustomer(Customer customer){
         customers.add(customer);
-
-        System.out.println("Customer added: "+ customer.getCustomerUserName());
     }
 
     public void removeCustomer(Customer customer){
@@ -91,6 +101,13 @@ public class BookingSystem {
 
     }
 
+    public Customer registerCustomer(String name, String contactInfo, String username, String password) {
+        Customer newCustomer = new Customer(name, contactInfo, username, password); 
+        customers.add(newCustomer);
+        System.out.println("Customer registered successfully! ID: " + newCustomer.getUserId());
+        return newCustomer;
+    }
+
     // Managing Rooms
 
     public void addRoom(Room room){
@@ -106,10 +123,9 @@ public class BookingSystem {
     }
 
 
-    public void displayAllRooms(){
-        System.out.println("Available Rooms: ");
-
-        for (Room room : rooms){
+    public void displayAllRooms() {
+        System.out.println("Rooms:");
+        for (Room room : rooms) {
             room.displayRoomDetails();
         }
     }
@@ -123,17 +139,22 @@ public class BookingSystem {
         return null; // Room not found
     }
 
-    public ArrayList<Room> searchAvailableRooms(LocalDate startDate, LocalDate endDate) {
-        // Your existing logic for searching available rooms based on the dates
-        // Example: Loop through rooms and check availability based on the dates
-        ArrayList<Room> availableRooms = new ArrayList<>();
-        for (Room room : rooms) {
-            if (room.isAvailable()) {
-                availableRooms.add(room);  // Assuming isAvailable is enough for now
+    public ArrayList<Room> searchAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate) {
+        ArrayList<Room> availableRooms = new ArrayList<>(rooms); // Start with all rooms
+    
+        for (Reservation reservation : reservations) {
+            Room reservedRoom = reservation.getRoom();
+    
+            // Check if the requested dates overlap with the reservation
+            if ((checkInDate.isBefore(reservation.getCheckOutDate()) 
+                && checkOutDate.isAfter(reservation.getCheckInDate()))) {
+                availableRooms.remove(reservedRoom); // Remove the reserved room
             }
         }
+    
         return availableRooms;
     }
+    
 
     private ArrayList<Room> initializeRooms() {
         ArrayList<Room> roomList = new ArrayList<>();
@@ -192,6 +213,13 @@ public class BookingSystem {
 
     //Managing reservations
 
+    public void addReservation(Reservation reservation) {
+        reservations.add(reservation);
+    
+        // Mark the room as unavailable
+        reservation.getRoom().setAvailable(false);
+        System.out.println("Reservation added successfully for room #" + reservation.getRoom().getRoomNumber());
+    }
 
     public void displayAllReservations() {
         System.out.println("\n=============== All Reservations ===============");
@@ -202,28 +230,41 @@ public class BookingSystem {
 
     public void cancelReservation(int reservationId) {
         Reservation reservationToCancel = null;
-
+    
+        // Find the reservation to cancel
         for (Reservation reservation : reservations) {
             if (reservation.getReservationId() == reservationId) {
                 reservationToCancel = reservation;
                 break;
             }
         }
-
+    
         if (reservationToCancel != null) {
+            // Remove the reservation from the list
             reservations.remove(reservationToCancel);
+    
+            // Mark the associated room as available
+            reservationToCancel.getRoom().setAvailable(true);
+    
             System.out.println("Reservation ID " + reservationId + " has been canceled.");
         } else {
             System.out.println("Reservation not found.");
         }
     }
+    
 
     public void displayReservationsByCustomerId(int customerId) {
+        boolean hasReservations = false;
         System.out.println("\n=============== Reservations for Customer ID " + customerId + " ===============");
         for (Reservation reservation : reservations) {
             if (reservation.getCustomer().getUserId() == customerId) {
                 reservation.displayReservationDetails();
+                hasReservations = true;
             }
+        }
+    
+        if (!hasReservations) {
+            System.out.println("No reservations found for this customer.");
         }
     }
 
@@ -253,7 +294,7 @@ public class BookingSystem {
             if (customer.getCustomerUserName().equals(username) && customer.validatePassword(password)) {
                 loggedInCustomer = customer;
                 loggedInAdmin = null;
-                System.out.println("Customer logged in successfully.");
+                
                 return true;
             }
         }

@@ -8,9 +8,12 @@ public class Reservation {
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
 
-    public Reservation(int reservation, Customer customer,Room room, LocalDate checkInDate, LocalDate checkOutDate){
+    private static int reservationCounter = 1; // Static counter for unique reservation IDs
 
-        this.reservationId = reservation;
+
+    public Reservation(Customer customer,Room room, LocalDate checkInDate, LocalDate checkOutDate){
+
+        this.reservationId = reservationCounter++;
         this.customer = customer;
         this.room = room;
         this.checkInDate = checkInDate;
