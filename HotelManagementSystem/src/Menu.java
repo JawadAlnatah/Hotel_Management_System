@@ -38,7 +38,8 @@ public class Menu {
     }
 
     private void displayMainMenu() {
-        System.out.println("===========================================");
+        System.out.println();
+        System.out.println("\n===========================================");
         System.out.println("|            Welcome to X Hotel            |");
         System.out.println("===========================================\n");
         System.out.println("[0] Exit");
@@ -117,18 +118,20 @@ public class Menu {
         }
     }
 
-    private void signUp(){
-        System.out.println("\n =============== Sign Up ===============");
-
+    private void signUp() {
+        System.out.println("\n=============== Sign Up ===============");
+    
         String name = getStringInput("Enter your name: ");
         String contactInfo = getStringInput("Enter your contact info: ");
         String username = getStringInput("Enter a username: ");
         String password = getStringInput("Enter a password: ");
-
-        Customer customer = new Customer(bookingSystem.getCustomers().size()+1, name, contactInfo, username,password);
-
+    
+        // Create a new Customer 
+        Customer customer = new Customer(name, contactInfo, username, password);
+    
+        // Add the customer to the booking system
         bookingSystem.addCustomer(customer);
-        System.out.println("Your account created successfully! You can now log in");
+        System.out.println("Your account created successfully! ");
     }
 
 
@@ -218,58 +221,101 @@ public class Menu {
         System.out.println("\n=============== All Reservations ===============");
         bookingSystem.displayAllReservations();
     }
+
+
     private void cancelReservation() {
-        System.out.println("\n=============== Cancel Reservation ===============");
-        int reservationId = getIntInput("Enter reservation ID to cancel: ");
-        bookingSystem.cancelReservation(reservationId);
+        if (bookingSystem.isLoggedInAdmin()) {
+            // Admin functionality
+            System.out.println("\n=============== Cancel Reservation ===============");
+            bookingSystem.displayAllReservations();
+            int reservationId = getIntInput("Enter reservation ID to cancel: ");
+            bookingSystem.cancelReservation(reservationId);
+            System.out.println("Reservation cancellation complete.");
+        } else if (bookingSystem.isLoggedInCustomer()) {
+            // Customer functionality
+            System.out.println("\n=============== Cancel Reservation ===============");
+            Customer customer = bookingSystem.getLoggedInCustomer();
+            if (customer == null) {
+                System.out.println("Error: No customer is logged in.");
+                return;
+            }
+            bookingSystem.displayReservationsByCustomerId(customer.getUserId());
+            int reservationId = getIntInput("Enter reservation ID to cancel: ");
+            bookingSystem.cancelReservation(reservationId);
+            System.out.println("Reservation cancellation complete.");
+        } else {
+            System.out.println("Error: No user is logged in.");
+        }
     }
+    
 
     private void viewCustomerReservations() {
         System.out.println("\n=============== My Reservations ===============");
-        int customerId = getIntInput("Enter your customer ID: ");
-        bookingSystem.displayReservationsByCustomerId(customerId);
+    
+        // Get the logged-in customer
+        Customer loggedInCustomer = bookingSystem.getLoggedInCustomer();
+    
+        if (loggedInCustomer == null) {
+            System.out.println("Error: No customer is logged in. Please log in to view reservations.");
+            return;
+        }
+    
+        // Use the logged-in customer's ID to display reservations
+        bookingSystem.displayReservationsByCustomerId(loggedInCustomer.getUserId());
     }
+    
 
 
     private void makeReservation() {
-    System.out.println("\n=============== Make a Reservation ===============");
-    int customerId = getIntInput("Enter your customer ID: ");
-    String startDate = getStringInput("Enter start date (yyyy-MM-dd): ");
-    String endDate = getStringInput("Enter end date (yyyy-MM-dd): ");
+        System.out.println("\n=============== Make a Reservation ===============");
+        
+        // Retrieve the logged-in customer
+        Customer customer = bookingSystem.getLoggedInCustomer();
+        if (customer == null) {
+            System.out.println("Error: No customer is logged in. Please log in to make a reservation.");
+            return;
+        }
     
-    ArrayList<Room> availableRooms = bookingSystem.searchAvailableRooms(startDate, endDate);
+        String startDateStr = getStringInput("Enter start date (yyyy-MM-dd): ");
+        String endDateStr = getStringInput("Enter end date (yyyy-MM-dd): ");
+    
+        try {
+            // Parse the input dates
+            LocalDate startDate = LocalDate.parse(startDateStr);
+            LocalDate endDate = LocalDate.parse(endDateStr);
+    
+            // Search for available rooms
+            ArrayList<Room> availableRooms = bookingSystem.searchAvailableRooms(startDate, endDate);
+    
+            if (availableRooms.isEmpty()) {
+                System.out.println("No rooms available for the given dates.");
+                return;
+            }
+    
+            System.out.println("Available Rooms:");
+            for (Room room : availableRooms) {
+                room.displayRoomDetails();
+            }
+    
+            int roomNumber = getIntInput("Enter the room number you wish to book: ");
+            Room selectedRoom = bookingSystem.findRoomByNumber(roomNumber);
+    
+            if (selectedRoom == null || !availableRooms.contains(selectedRoom)) {
+                System.out.println("Invalid room selection. Please try again.");
+                return;
+            }
+    
+            // Create a new reservation
+            Reservation reservation = new Reservation(customer, selectedRoom, startDate, endDate);
 
-    if (availableRooms.isEmpty()) {
-        System.out.println("No rooms available for the given dates.");
-        return;
+    
+            bookingSystem.addReservation(reservation);
+    
+            System.out.println("Reservation created successfully! Your reservation ID is " + reservation.getReservationId());
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid date format. Please use yyyy-MM-dd.");
+        }
     }
-
-    System.out.println("Available Rooms:");
-    for (Room room : availableRooms) {
-        room.displayRoomDetails();
-    }
-
-    int roomNumber = getIntInput("Enter the room number you wish to book: ");
-    Room selectedRoom = bookingSystem.findRoomByNumber(roomNumber);
-
-    if (selectedRoom == null || !availableRooms.contains(selectedRoom)) {
-        System.out.println("Invalid room selection. Please try again.");
-        return;
-    }
-
-    Customer customer = bookingSystem.findCustomerById(customerId);
-    if (customer == null) {
-        System.out.println("Customer not found.");
-        return;
-    }
-
-    Reservation reservation = new Reservation(
-        bookingSystem.getReservations().size() + 1,customer,selectedRoom,LocalDate.parse(startDate),LocalDate.parse(endDate)
-    );
-    bookingSystem.addReservation(reservation);
-
-    System.out.println("Reservation created successfully! Your reservation ID is " + reservation.getReservationId());
-}
 
 
 

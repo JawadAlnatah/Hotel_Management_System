@@ -27,11 +27,6 @@ public class User {
 
     //setters
 
-    public void setUserId(int userId){
-        this.userId =userId;
-    }
-
-   
 
     public void setName(String name){
         this.name = name;

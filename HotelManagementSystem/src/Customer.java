@@ -1,13 +1,18 @@
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Customer extends User {
 
     private String customerUserName;
     private String customerPassword;
 
-    public Customer(int userId, String name, String contactInfo, String customerUserName, String customerPassword){
-        super(userId, name, contactInfo);
-        this.customerUserName =customerUserName;
+    private static final AtomicInteger idCounter = new AtomicInteger(1); // Unique ID generator
+
+
+
+    public Customer(String name, String contactInfo, String customerUserName, String customerPassword) {
+        super(idCounter.getAndIncrement(), name, contactInfo); // Generates a unique ID
+        this.customerUserName = customerUserName;
         this.customerPassword = customerPassword;
-        
     }
 
     //getters
