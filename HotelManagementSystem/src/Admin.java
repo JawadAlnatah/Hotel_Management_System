@@ -61,6 +61,12 @@ public class Admin extends User {
     bookingSystem.displayAllCustomers();
   }
 
+  public void addNewAdmin(BookingSystem bookingSystem, String name, String contactInfo, String username, String password) {
+    Admin newAdmin = new Admin(name, contactInfo, username, password);
+    bookingSystem.addAdmin(newAdmin);
+    System.out.println("New admin added successfully! Username: " + username);
+}
+
 
 
 

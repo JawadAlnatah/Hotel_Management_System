@@ -5,6 +5,7 @@ public class Reservation {
     private int reservationId;
     private Customer customer;
     private Room room;
+    private Payment payment;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
 
@@ -46,6 +47,14 @@ public class Reservation {
         this.room = room;
     }
 
+    public Payment getPayment() {
+        return payment;
+    }
+    
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
     public LocalDate getCheckInDate(){
         return checkInDate;
     }
@@ -69,9 +78,19 @@ public class Reservation {
         System.out.println("Reservation ID: " + reservationId);
         System.out.println("Customer Name: " + customer.getName());
         System.out.println("Room Number: " + room.getRoomNumber());
+        System.out.println("Room Type: " + room.getRoomType());
         System.out.println("Start Date: " + checkInDate);
         System.out.println("End Date: " + checkOutDate);
+    
+        if (payment != null) {
+            System.out.println("Payment ID: " + payment.getPaymentId());
+            System.out.println("Amount Paid: $" + payment.getAmount());
+            System.out.println("Payment Method: " + payment.getPaymentMethod());
+        } else {
+            System.out.println("Payment: Not yet processed.");
+        }
     }
+    
     
     
     

@@ -2,20 +2,20 @@ import java.time.LocalDate;
 
 public class Payment {
 
+    private static int nextPaymentId = 1; // Auto-increment ID generator
     private int paymentId;
     private Reservation reservation; // Associated with reservation
     private double amount;
-    private String paymentMethod; // "Credit Card, cash"
+    private String paymentMethod; // e.g., Credit Card, Cash, etc.
     private LocalDate paymentDate;
 
 
-    public Payment(int paymentId, Reservation reservation, double amount, String paymentMethod, LocalDate paymenDate){
+    public Payment(Reservation reservation, double amount, String paymentMethod){
         
-        this.paymentId = paymentId;
+        this.paymentId = nextPaymentId++;
         this.reservation = reservation;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
-        this.paymentDate = paymenDate;
     }  
     
     // Getters and Setters
@@ -63,10 +63,11 @@ public class Payment {
 
     public void displayPaymentDetails() {
         System.out.println("\n--- Payment Details ---");
+        System.out.println("Customer name: "+reservation.getCustomer().getName());
         System.out.println("Payment ID: " + paymentId);
         System.out.println("Reservation ID: " + reservation.getReservationId());
         System.out.println("Amount: $" + amount);
         System.out.println("Payment Method: " + paymentMethod);
-        System.out.println("Payment Date: " + paymentDate);
+        
     }
 }
