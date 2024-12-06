@@ -3,12 +3,14 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 public class BookingSystem {
+
+    // Associations with other classes
     
-    private ArrayList<Admin> admins;
-    private ArrayList<Customer> customers;
-    private ArrayList<Room> rooms;
-    private ArrayList<Reservation> reservations;
-    private ArrayList<Payment> payments;
+    private ArrayList<Admin> admins; // Association with Admin
+    private ArrayList<Customer> customers; // Association with Customer
+    private ArrayList<Room> rooms; // Association with Room
+    private ArrayList<Reservation> reservations; // Association with Reservation
+    private ArrayList<Payment> payments; // Association with Payment
 
     private Admin loggedInAdmin;
     private Customer loggedInCustomer;

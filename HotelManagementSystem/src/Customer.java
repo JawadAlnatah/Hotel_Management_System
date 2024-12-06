@@ -1,5 +1,6 @@
 import java.util.concurrent.atomic.AtomicInteger;
 
+//customer inherit from user
 public class Customer extends User {
 
     private String customerUserName;

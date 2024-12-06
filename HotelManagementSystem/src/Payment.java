@@ -4,7 +4,7 @@ public class Payment {
 
     private static int nextPaymentId = 1; // Auto-increment ID generator
     private int paymentId;
-    private Reservation reservation; // Associated with reservation
+    private Reservation reservation; // Composition: Payment cannot exist meaningfully without a Reservation
     private double amount;
     private String paymentMethod; // e.g., Credit Card, Cash, etc.
     private LocalDate paymentDate;

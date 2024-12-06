@@ -1,3 +1,5 @@
+
+// user is a super class of admin and customer 
 public class User {
 
     private int userId;
