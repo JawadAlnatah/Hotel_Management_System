@@ -3,9 +3,9 @@ import java.time.LocalDate;
 public class Reservation {
      
     private int reservationId;
-    private Customer customer;
-    private Room room;
-    private Payment payment;
+    private Customer customer;  // Associated customer making the reservation
+    private Room room;  // Associated room being booked
+    private Payment payment; // Associated payment for the reservation
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
 

@@ -1,3 +1,5 @@
+
+//admin inherit from user
 public class Admin extends User {
 
   private String adminUserName;

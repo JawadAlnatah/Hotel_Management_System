@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Scanner;;
 public class Menu {
 
-    private BookingSystem bookingSystem;
+    // Aggregation: Menu has a reference to BookingSystem
+    private BookingSystem bookingSystem; // BookingSystem instance is passed in, not created here.
     private Scanner input;
     boolean exit = false;
 
     
     
-
+    // Constructor accepting a BookingSystem instance
     public Menu(BookingSystem bookingSystem){
         this.bookingSystem = bookingSystem;
         this.input = new Scanner(System.in);
