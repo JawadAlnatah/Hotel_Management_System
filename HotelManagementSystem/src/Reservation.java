@@ -3,9 +3,9 @@ import java.time.LocalDate;
 public class Reservation {
      
     private int reservationId;
-    private Customer customer;  // Associated customer making the reservation
-    private Room room;  // Associated room being booked
-    private Payment payment; // Associated payment for the reservation
+    private Customer customer;  // Association: Reservation is associated with a Customer to identify who made the reservation.
+    private Room room;  // Association: Reservation is associated with a specific Room, which is used but not owned by Reservation.
+    private Payment payment; // Composition: Reservation directly owns the Payment object, and if the reservation is deleted, the payment is too.
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
 

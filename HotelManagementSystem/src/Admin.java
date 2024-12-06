@@ -51,6 +51,7 @@ public class Admin extends User {
 
   //functionality
 
+  //(association) Admin uses the BookingSystem to perform administrative actions.
   public void addRoom(BookingSystem bookingSystem , Room room){
     bookingSystem.addRoom(room);
   }

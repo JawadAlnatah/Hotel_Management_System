@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 public class BookingSystem {
 
-    // Associations with other classes
     
-    private ArrayList<Admin> admins; // Association with Admin
-    private ArrayList<Customer> customers; // Association with Customer
-    private ArrayList<Room> rooms; // Association with Room
-    private ArrayList<Reservation> reservations; // Association with Reservation
-    private ArrayList<Payment> payments; // Association with Payment
+    
+    private ArrayList<Admin> admins; // Aggregation: BookingSystem manages a list of Admin objects, which can exist independently of it.
+    private ArrayList<Customer> customers; // Aggregation: BookingSystem manages Customer objects without owning their lifecycle.
+    private ArrayList<Room> rooms; // Aggregation: BookingSystem maintains a collection of Room objects, but Room instances can exist independently.
+    private ArrayList<Reservation> reservations; // Aggregation: BookingSystem keeps a list of Reservation objects but does not control their lifecycle.
+    private ArrayList<Payment> payments; // Aggregation: BookingSystem maintains Payment records without managing their lifecycle explicitly.
 
     private Admin loggedInAdmin;
     private Customer loggedInCustomer;

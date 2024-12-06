@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Scanner;;
 public class Menu {
 
-    // Aggregation: Menu has a reference to BookingSystem
-    private BookingSystem bookingSystem; // BookingSystem instance is passed in, not created here.
+    // Aggregation: Menu uses BookingSystem for functionality and operations, but Menu doesn’t manage BookingSystem.
+    private BookingSystem bookingSystem; 
     private Scanner input;
     boolean exit = false;
 
